@@ -21,7 +21,7 @@
       overflow: hidden;
     }
 
-    /* ===== GRANO DE FONDO ===== */
+    /* ===== GRANO ===== */
     body::before {
       content: "";
       position: fixed;
@@ -32,16 +32,14 @@
       pointer-events: none;
     }
 
-    /* ===== CONTENEDOR ===== */
     .container {
       text-align: center;
       padding: 60px 40px;
       max-width: 620px;
       width: 90%;
-      position: relative;
     }
 
-    /* ===== TITULO CON GLITCH ===== */
+    /* ===== TITULO ===== */
     .glitch {
       position: relative;
       font-size: 3.2rem;
@@ -57,35 +55,45 @@
       left: 0;
       top: 0;
       width: 100%;
-      opacity: 0.6;
+      opacity: 0;
       pointer-events: none;
     }
 
     .glitch::before {
       color: #38bdf8;
-      animation: glitchTop 3.5s infinite linear alternate-reverse;
     }
 
     .glitch::after {
       color: #a78bfa;
-      animation: glitchBottom 4s infinite linear alternate-reverse;
+    }
+
+    /* ===== GLITCH ACTIVO ===== */
+    .glitch.active::before {
+      opacity: 0.9;
+      animation: glitchTop 0.25s steps(2) infinite;
+    }
+
+    .glitch.active::after {
+      opacity: 0.9;
+      animation: glitchBottom 0.25s steps(2) infinite;
     }
 
     @keyframes glitchTop {
-      0%, 95%, 100% { transform: translate(0); }
-      96% { transform: translate(-2px, -2px); }
-      97% { transform: translate(2px, 2px); }
-      98% { transform: translate(-1px, 1px); }
+      0% { transform: translate(0); clip-path: inset(0 0 80% 0); }
+      25% { transform: translate(-4px, -2px); clip-path: inset(0 0 40% 0); }
+      50% { transform: translate(4px, 2px); clip-path: inset(0 0 60% 0); }
+      75% { transform: translate(-2px, 2px); clip-path: inset(0 0 30% 0); }
+      100% { transform: translate(0); clip-path: inset(0 0 80% 0); }
     }
 
     @keyframes glitchBottom {
-      0%, 92%, 100% { transform: translate(0); }
-      93% { transform: translate(2px, 1px); }
-      94% { transform: translate(-2px, -1px); }
-      95% { transform: translate(1px, -2px); }
+      0% { transform: translate(0); clip-path: inset(80% 0 0 0); }
+      25% { transform: translate(4px, 2px); clip-path: inset(40% 0 0 0); }
+      50% { transform: translate(-4px, -2px); clip-path: inset(60% 0 0 0); }
+      75% { transform: translate(2px, -2px); clip-path: inset(30% 0 0 0); }
+      100% { transform: translate(0); clip-path: inset(80% 0 0 0); }
     }
 
-    /* ===== SUBTEXTO ===== */
     .subtitle {
       margin-top: 16px;
       font-size: 0.9rem;
@@ -94,7 +102,6 @@
       text-transform: uppercase;
     }
 
-    /* ===== LINEA ===== */
     .line {
       width: 120px;
       height: 1px;
@@ -103,7 +110,6 @@
       opacity: 0.6;
     }
 
-    /* ===== FRASE ===== */
     .quote {
       font-size: 1.05rem;
       color: #d1d5db;
@@ -111,7 +117,6 @@
       margin-bottom: 38px;
     }
 
-    /* ===== CONTADOR ===== */
     .countdown {
       display: flex;
       justify-content: center;
@@ -146,7 +151,6 @@
 
     @media (max-width: 520px) {
       .glitch { font-size: 2.3rem; }
-      .value { font-size: 2rem; }
     }
   </style>
 </head>
@@ -154,7 +158,7 @@
 <body>
 
   <div class="container">
-    <div class="glitch" data-text="RUN FROM IT">RUN FROM IT</div>
+    <div class="glitch" id="glitchTitle" data-text="RUN FROM IT">RUN FROM IT</div>
     <div class="subtitle">Roblox Game</div>
 
     <div class="line"></div>
@@ -183,12 +187,11 @@
       </div>
     </div>
 
-    <footer>
-      © 2026 · RUN FROM IT · Coming Soon
-    </footer>
+    <footer>© 2026 · RUN FROM IT · Coming Soon</footer>
   </div>
 
   <script>
+    /* ===== CONTADOR ===== */
     const releaseDate = new Date("July 14, 2026 00:00:00").getTime();
 
     function updateCountdown() {
@@ -196,19 +199,34 @@
       const diff = releaseDate - now;
       if (diff <= 0) return;
 
-      document.getElementById("days").textContent =
-        Math.floor(diff / (1000 * 60 * 60 * 24));
-      document.getElementById("hours").textContent =
-        Math.floor((diff / (1000 * 60 * 60)) % 24);
-      document.getElementById("minutes").textContent =
-        Math.floor((diff / (1000 * 60)) % 60);
-      document.getElementById("seconds").textContent =
-        Math.floor((diff / 1000) % 60);
+      days.textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
+      hours.textContent = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      minutes.textContent = Math.floor((diff / (1000 * 60)) % 60);
+      seconds.textContent = Math.floor((diff / 1000) % 60);
     }
 
-    updateCountdown();
     setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    /* ===== GLITCH INTERMITENTE ===== */
+    const title = document.getElementById("glitchTitle");
+
+    function triggerGlitch() {
+      title.classList.add("active");
+      setTimeout(() => {
+        title.classList.remove("active");
+      }, 300);
+    }
+
+    function randomGlitch() {
+      triggerGlitch();
+      const next = Math.random() * 5000 + 5000; // 5–10 segundos
+      setTimeout(randomGlitch, next);
+    }
+
+    randomGlitch();
   </script>
 
 </body>
 </html>
+
