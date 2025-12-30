@@ -1,81 +1,100 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Juego de Roblox - En Desarrollo</title>
+  <title>Juego de Roblox | Próximamente</title>
+
   <style>
     body {
-      background: linear-gradient(135deg, #0f172a, #020617);
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      font-family: 'Segoe UI', Arial, sans-serif;
       color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 60px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .card {
-      max-width: 500px;
-      margin: auto;
-      background: rgba(255,255,255,0.05);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    .container {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 520px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.6);
     }
 
     h1 {
-      font-size: 32px;
+      font-size: 36px;
       margin-bottom: 10px;
     }
 
-    .estado {
-      color: #facc15;
+    .badge {
+      display: inline-block;
+      background: #facc15;
+      color: #1e293b;
+      padding: 6px 14px;
+      border-radius: 999px;
       font-weight: bold;
       margin-bottom: 20px;
     }
 
-    .info {
+    .desc {
       color: #cbd5f5;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .fecha {
+      font-size: 22px;
+      font-weight: bold;
       margin-bottom: 30px;
     }
 
     button {
-      background: #3b82f6;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
       border: none;
-      padding: 15px 30px;
+      padding: 16px 34px;
       font-size: 18px;
-      border-radius: 10px;
+      border-radius: 14px;
+      color: white;
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.7;
     }
 
     footer {
-      margin-top: 40px;
+      margin-top: 25px;
       font-size: 14px;
       color: #94a3b8;
     }
   </style>
 </head>
+
 <body>
 
-  <div class="card">
+  <div class="container">
     <h1>🎮 Mi Juego de Roblox</h1>
 
-    <div class="estado">
-      🚧 EN DESARROLLO 🚧
-    </div>
+    <div class="badge">🚧 EN DESARROLLO</div>
 
-    <p class="info">
-      Este juego aún no ha salido.<br>
-      Actualmente está en desarrollo y pronto habrá más información.
+    <p class="desc">
+      Estamos trabajando en una experiencia divertida y única.
+      ¡Muy pronto podrás jugar!
     </p>
 
+    <div class="fecha">
+      📅 Sale el <span style="color:#38bdf8;">5 de marzo</span>
+    </div>
+
     <button>No disponible todavía</button>
+
+    <footer>
+      © 2026 · Juego de Roblox
+    </footer>
   </div>
 
-  <footer>
-    © 2025 - Juego de Roblox en desarrollo
-  </footer>
-
 </body>
-</html>
-
 </html>
