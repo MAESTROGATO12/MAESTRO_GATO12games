@@ -1,216 +1,259 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RUN AWAY</title>
 
 <style>
-:root {
-  --bg: #050505;
-  --text: #e5e5e5;
-  --accent: #ff2a2a;
-  --ghost: #777;
-}
-
+/* =========================
+   RESET
+========================= */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: "Courier New", monospace;
-  height: 100vh;
+html, body {
+  height: 100%;
+  background: #000;
+  color: #e5e7eb;
+  font-family: monospace;
   overflow: hidden;
 }
 
-/* ===== STAGE ===== */
-#stage {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: opacity 1s ease;
-}
-
-/* ===== TITLE ===== */
-#title {
-  font-size: clamp(3rem, 8vw, 6rem);
-  letter-spacing: 6px;
-  transition: transform 0.15s ease, opacity 0.5s ease;
-}
-
-/* breathing */
-#title {
-  animation: breathe 8s infinite;
-}
-
-@keyframes breathe {
-  0% { opacity: 0.85; }
-  50% { opacity: 1; }
-  100% { opacity: 0.85; }
-}
-
-/* ===== TEXT ===== */
-#text {
-  margin-top: 20px;
-  font-size: 0.9rem;
-  opacity: 0.6;
-  transition: opacity 0.5s ease;
-}
-
-/* ===== GLITCH ===== */
-.glitch {
-  animation: glitch 0.15s steps(2) infinite;
-  color: var(--accent);
-}
-
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px,1px); }
-  40% { transform: translate(2px,-1px); }
-  60% { transform: translate(-1px,2px); }
-  80% { transform: translate(1px,-2px); }
-  100% { transform: translate(0); }
-}
-
-/* ===== OVERLAY ===== */
-#overlay {
+/* =========================
+   BACKGROUND EFFECTS
+========================= */
+.noise {
   position: fixed;
   inset: 0;
-  background: black;
-  color: var(--accent);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(3rem, 10vw, 7rem);
-  letter-spacing: 8px;
-  animation: shake 0.12s infinite;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 1;
 }
 
-@keyframes shake {
-  0% { transform: translate(0); }
-  25% { transform: translate(3px,2px); }
-  50% { transform: translate(-3px,-2px); }
-  75% { transform: translate(2px,-3px); }
+.vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* =========================
+   MAIN WRAPPER
+========================= */
+.app {
+  position: relative;
+  z-index: 5;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+/* =========================
+   TITLE
+========================= */
+.title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.title::before,
+.title::after {
+  content: "RUN AWAY";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.title::before {
+  color: red;
+}
+
+.title::after {
+  color: #fff;
+}
+
+.glitch::before {
+  opacity: 1;
+  animation: glitchA 0.25s infinite;
+}
+
+.glitch::after {
+  opacity: 1;
+  animation: glitchB 0.25s infinite;
+}
+
+@keyframes glitchA {
+  0% { transform: translate(0); clip-path: inset(0 0 60% 0); }
+  50% { transform: translate(-4px, -2px); clip-path: inset(0 0 30% 0); }
   100% { transform: translate(0); }
 }
 
-/* ===== GHOST TEXT ===== */
-#ghost {
+@keyframes glitchB {
+  0% { transform: translate(0); clip-path: inset(60% 0 0 0); }
+  50% { transform: translate(4px, 2px); clip-path: inset(30% 0 0 0); }
+  100% { transform: translate(0); }
+}
+
+/* =========================
+   SUBTEXT
+========================= */
+.sub {
+  margin-top: 30px;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  color: #9ca3af;
+}
+
+/* =========================
+   TERMINAL
+========================= */
+.terminal {
   position: absolute;
-  bottom: 14px;
+  bottom: 40px;
   width: 100%;
-  text-align: center;
-  font-size: 0.7rem;
-  opacity: 0.03;
-  color: var(--ghost);
+  max-width: 700px;
+  font-size: 0.75rem;
+  color: #a5f3fc;
+  text-align: left;
+  line-height: 1.6;
+}
+
+/* =========================
+   HIDDEN
+========================= */
+.hidden {
+  display: none;
 }
 </style>
 </head>
 
 <body>
 
-<div id="stage">
+<div class="noise"></div>
+<div class="vignette"></div>
+
+<div class="app">
   <div>
-    <div id="title">RUN AWAY</div>
-    <div id="text">nothing is happening</div>
+    <div class="title" id="title">RUN AWAY</div>
+    <div class="sub">you were not supposed to find this</div>
   </div>
+
+  <div class="terminal" id="terminal"></div>
 </div>
 
-<div id="ghost">you stayed longer than expected</div>
-<div id="overlay">RUN AWAY</div>
-
 <script>
-/* ===== MEMORY ===== */
-let visits = Number(localStorage.getItem("visits") || 0) + 1;
-localStorage.setItem("visits", visits);
-
-/* ===== LIES ROTATION ===== */
-const text = document.getElementById("text");
-const lies = [
-  "nothing is happening",
-  "everything is fine",
-  "you are safe here",
-  "there is nothing else",
-  "stop looking",
-  "this page is empty",
-  "go away"
-];
-
-let lieIndex = 0;
-setInterval(() => {
-  lieIndex = (lieIndex + 1) % lies.length;
-  text.style.opacity = 0;
-  setTimeout(() => {
-    text.textContent = lies[lieIndex];
-    text.style.opacity = 0.6;
-  }, 400);
-}, 9000);
-
-/* ===== VISITOR AWARENESS ===== */
-if (visits >= 2) text.textContent = "you came back";
-if (visits >= 4) {
-  text.textContent = "you were warned";
-  text.style.color = "var(--accent)";
-}
-if (visits >= 7) {
-  document.getElementById("ghost").textContent = "it remembers you";
-}
-
-/* ===== GLITCH INTELLIGENT ===== */
+/* =========================
+   GLITCH RANDOM
+========================= */
 const title = document.getElementById("title");
 
 function glitchOnce() {
   title.classList.add("glitch");
-  setTimeout(() => title.classList.remove("glitch"), 350);
+  setTimeout(() => title.classList.remove("glitch"), 400);
 }
 
-setInterval(glitchOnce, Math.random() * 8000 + 6000);
-
-/* ===== MOUSE REACTION ===== */
-document.addEventListener("mousemove", e => {
-  const x = (e.clientX / window.innerWidth - 0.5) * 6;
-  const y = (e.clientY / window.innerHeight - 0.5) * 6;
-  title.style.transform = `translate(${x}px, ${y}px)`;
-});
-
-/* ===== RUN AWAY EVENT ===== */
-const overlay = document.getElementById("overlay");
-let clicks = 0;
-
-function runAway() {
-  overlay.style.display = "flex";
-  setTimeout(() => overlay.style.display = "none", 5000);
+function randomGlitch() {
+  glitchOnce();
+  setTimeout(randomGlitch, Math.random() * 7000 + 4000);
 }
+randomGlitch();
 
-/* 3 clicks */
-document.addEventListener("click", () => {
-  clicks++;
-  if (clicks === 3) runAway();
-});
+/* =========================
+   TERMINAL TEXT
+========================= */
+const terminal = document.getElementById("terminal");
+const lines = [
+  "> connection established",
+  "> signal unstable",
+  "> they are closer than you think",
+  "> do not trust the page",
+  "> time is not what you believe",
+  "> RUN"
+];
 
-/* secret typing */
-let typed = "";
-document.addEventListener("keydown", e => {
-  typed += e.key.toLowerCase();
-  if (typed.includes("run")) runAway();
-  if (typed.length > 20) typed = "";
-});
-
-/* ===== ONE TIME EVENT ===== */
-if (!localStorage.getItem("firstFear")) {
-  setTimeout(() => {
-    text.textContent = "why are you still here";
-    localStorage.setItem("firstFear", "true");
-  }, 15000);
+let i = 0;
+function typeLine() {
+  if (i >= lines.length) return;
+  terminal.innerHTML += lines[i] + "<br>";
+  i++;
+  setTimeout(typeLine, 1100);
 }
+setTimeout(typeLine, 2000);
+
+/* =========================
+   TIME-BASED ARG EVENT
+========================= */
+(function () {
+  const startHour = 3;
+  const endHour = 4;
+  const secretLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1";
+
+  const now = new Date();
+  const spainTime = new Date(
+    now.toLocaleString("en-US", { timeZone: "Europe/Madrid" })
+  );
+
+  const hour = spainTime.getHours();
+
+  if (hour >= startHour && hour < endHour) {
+    document.body.innerHTML = "";
+    document.body.style.background = "black";
+
+    const msg = document.createElement("div");
+    msg.textContent = "RUN.";
+    msg.style.color = "red";
+    msg.style.fontSize = "5rem";
+    msg.style.letterSpacing = "0.4em";
+    msg.style.position = "fixed";
+    msg.style.top = "50%";
+    msg.style.left = "50%";
+    msg.style.transform = "translate(-50%, -50%)";
+    msg.style.animation = "shake 0.1s infinite";
+
+    document.body.appendChild(msg);
+
+    setTimeout(() => {
+      window.location.href = secretLink;
+    }, 5000);
+  }
+})();
+
+/* =========================
+   SHAKE
+========================= */
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes shake {
+  0% { transform: translate(-50%, -50%) translate(0,0); }
+  25% { transform: translate(-50%, -50%) translate(4px,-4px); }
+  50% { transform: translate(-50%, -50%) translate(-4px,4px); }
+  75% { transform: translate(-50%, -50%) translate(4px,4px); }
+  100% { transform: translate(-50%, -50%) translate(0,0); }
+}
+`;
+document.head.appendChild(style);
 </script>
 
 </body>
 </html>
+
+
 
 
                                                                                                                   
