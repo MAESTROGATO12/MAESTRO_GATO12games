@@ -1,232 +1,300 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>RUN FROM IT</title>
+<meta charset="UTF-8">
+<title>RUN FROM IT</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(180deg, #020617, #000000);
-      color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+/* =======================
+   RESET Y BASE
+======================= */
 
-    /* ===== GRANO ===== */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 3px 3px;
-      opacity: 0.25;
-      pointer-events: none;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    .container {
-      text-align: center;
-      padding: 60px 40px;
-      max-width: 620px;
-      width: 90%;
-    }
+:root {
+  --bg-dark: #020617;
+  --bg-darker: #000000;
+  --primary: #38bdf8;
+  --secondary: #a78bfa;
+  --danger: #ef4444;
+  --text-main: #e5e7eb;
+  --text-dim: #9ca3af;
+}
 
-    /* ===== TITULO ===== */
-    .glitch {
-      position: relative;
-      font-size: 3.2rem;
-      letter-spacing: 6px;
-      color: #f9fafb;
-      text-transform: uppercase;
-    }
+html, body {
+  height: 100%;
+}
 
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      opacity: 0;
-      pointer-events: none;
-    }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #020617, #000);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
 
-    .glitch::before {
-      color: #38bdf8;
-    }
+/* =======================
+   EFECTOS DE FONDO
+======================= */
 
-    .glitch::after {
-      color: #a78bfa;
-    }
+.noise {
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 1;
+}
 
-    /* ===== GLITCH ACTIVO ===== */
-    .glitch.active::before {
-      opacity: 0.9;
-      animation: glitchTop 0.25s steps(2) infinite;
-    }
+.vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8));
+  pointer-events: none;
+  z-index: 2;
+}
 
-    .glitch.active::after {
-      opacity: 0.9;
-      animation: glitchBottom 0.25s steps(2) infinite;
-    }
+/* =======================
+   CONTENEDOR PRINCIPAL
+======================= */
 
-    @keyframes glitchTop {
-      0% { transform: translate(0); clip-path: inset(0 0 80% 0); }
-      25% { transform: translate(-4px, -2px); clip-path: inset(0 0 40% 0); }
-      50% { transform: translate(4px, 2px); clip-path: inset(0 0 60% 0); }
-      75% { transform: translate(-2px, 2px); clip-path: inset(0 0 30% 0); }
-      100% { transform: translate(0); clip-path: inset(0 0 80% 0); }
-    }
+.wrapper {
+  position: relative;
+  z-index: 3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  text-align: center;
+}
 
-    @keyframes glitchBottom {
-      0% { transform: translate(0); clip-path: inset(80% 0 0 0); }
-      25% { transform: translate(4px, 2px); clip-path: inset(40% 0 0 0); }
-      50% { transform: translate(-4px, -2px); clip-path: inset(60% 0 0 0); }
-      75% { transform: translate(2px, -2px); clip-path: inset(30% 0 0 0); }
-      100% { transform: translate(0); clip-path: inset(80% 0 0 0); }
-    }
+/* =======================
+   TITULO CINEMÁTICO
+======================= */
 
-    .subtitle {
-      margin-top: 16px;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      color: #9ca3af;
-      text-transform: uppercase;
-    }
+.title {
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  position: relative;
+  animation: flicker 6s infinite;
+}
 
-    .line {
-      width: 120px;
-      height: 1px;
-      background: linear-gradient(to right, transparent, #38bdf8, transparent);
-      margin: 32px auto;
-      opacity: 0.6;
-    }
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  48% { opacity: 1; }
+  50% { opacity: 0.7; }
+  52% { opacity: 1; }
+  90% { opacity: 1; }
+  92% { opacity: 0.85; }
+}
 
-    .quote {
-      font-size: 1.05rem;
-      color: #d1d5db;
-      line-height: 1.6;
-      margin-bottom: 38px;
-    }
+.title span {
+  color: var(--primary);
+}
 
-    .countdown {
-      display: flex;
-      justify-content: center;
-      gap: 22px;
-      flex-wrap: wrap;
-    }
+/* =======================
+   FRASE CENTRAL
+======================= */
 
-    .time {
-      min-width: 80px;
-    }
+.tagline {
+  margin-top: 24px;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  max-width: 600px;
+  line-height: 1.7;
+}
 
-    .value {
-      font-size: 2.4rem;
-      font-weight: 600;
-      color: #38bdf8;
-    }
+/* =======================
+   SEPARADOR ANIMADO
+======================= */
 
-    .label {
-      font-size: 0.65rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #9ca3af;
-      margin-top: 6px;
-    }
+.separator {
+  margin: 50px 0;
+  width: 160px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary),
+    transparent
+  );
+  animation: scan 3s infinite linear;
+}
 
-    footer {
-      margin-top: 50px;
-      font-size: 0.7rem;
-      letter-spacing: 1px;
-      color: #6b7280;
-    }
+@keyframes scan {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
 
-    @media (max-width: 520px) {
-      .glitch { font-size: 2.3rem; }
-    }
-  </style>
+/* =======================
+   BLOQUE DE CUENTA ATRÁS
+======================= */
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(80px, 1fr));
+  gap: 24px;
+  margin-bottom: 60px;
+}
+
+.time-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 20px 10px;
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+  transition: transform 0.3s ease;
+}
+
+.time-box:hover {
+  transform: translateY(-4px);
+}
+
+.time-value {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.time-label {
+  margin-top: 8px;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+}
+
+/* =======================
+   BLOQUE DE HISTORIA
+======================= */
+
+.story {
+  max-width: 700px;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: #cbd5f5;
+  opacity: 0.9;
+}
+
+/* =======================
+   FOOTER
+======================= */
+
+.footer {
+  margin-top: 80px;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
+
+@media (max-width: 600px) {
+  .countdown {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+</style>
 </head>
 
 <body>
 
-  <div class="container">
-    <div class="glitch" id="glitchTitle" data-text="RUN FROM IT">RUN FROM IT</div>
-    <div class="subtitle">Roblox Game</div>
+<div class="noise"></div>
+<div class="vignette"></div>
 
-    <div class="line"></div>
+<div class="wrapper">
 
-    <div class="quote">
-      Something is watching you.<br>
-      You were never meant to escape.
+  <h1 class="title">
+    RUN <span>FROM</span> IT
+  </h1>
+
+  <p class="tagline">
+    You were never alone.  
+    You just didn’t notice it following you.
+  </p>
+
+  <div class="separator"></div>
+
+  <div class="countdown">
+    <div class="time-box">
+      <div class="time-value" id="days">0</div>
+      <div class="time-label">DÍAS</div>
     </div>
-
-    <div class="countdown">
-      <div class="time">
-        <div class="value" id="days">0</div>
-        <div class="label">Días</div>
-      </div>
-      <div class="time">
-        <div class="value" id="hours">0</div>
-        <div class="label">Horas</div>
-      </div>
-      <div class="time">
-        <div class="value" id="minutes">0</div>
-        <div class="label">Min</div>
-      </div>
-      <div class="time">
-        <div class="value" id="seconds">0</div>
-        <div class="label">Seg</div>
-      </div>
+    <div class="time-box">
+      <div class="time-value" id="hours">0</div>
+      <div class="time-label">HORAS</div>
     </div>
-
-    <footer>© 2026 · RUN FROM IT · Coming Soon</footer>
+    <div class="time-box">
+      <div class="time-value" id="minutes">0</div>
+      <div class="time-label">MIN</div>
+    </div>
+    <div class="time-box">
+      <div class="time-value" id="seconds">0</div>
+      <div class="time-label">SEG</div>
+    </div>
   </div>
 
-  <script>
-    /* ===== CONTADOR ===== */
-    const releaseDate = new Date("July 14, 2026 00:00:00").getTime();
+  <div class="story">
+    RUN FROM IT is a psychological horror experience on Roblox.  
+    No weapons. No safe zones.  
+    Only instincts, darkness… and something that learns how you move.
+  </div>
 
-    function updateCountdown() {
-      const now = Date.now();
-      const diff = releaseDate - now;
-      if (diff <= 0) return;
+  <div class="footer">
+    © 2026 · RUN FROM IT · Roblox Experience
+  </div>
 
-      days.textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
-      hours.textContent = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      minutes.textContent = Math.floor((diff / (1000 * 60)) % 60);
-      seconds.textContent = Math.floor((diff / 1000) % 60);
-    }
+</div>
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+<script>
 
-    /* ===== GLITCH INTERMITENTE ===== */
-    const title = document.getElementById("glitchTitle");
+/* =======================
+   CUENTA ATRÁS
+======================= */
 
-    function triggerGlitch() {
-      title.classList.add("active");
-      setTimeout(() => {
-        title.classList.remove("active");
-      }, 300);
-    }
+const release = new Date("July 14, 2026 00:00:00").getTime();
 
-    function randomGlitch() {
-      triggerGlitch();
-      const next = Math.random() * 5000 + 5000; // 5–10 segundos
-      setTimeout(randomGlitch, next);
-    }
+function update() {
+  const now = Date.now();
+  const diff = release - now;
+  if (diff <= 0) return;
 
-    randomGlitch();
-  </script>
+  document.getElementById("days").textContent =
+    Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  document.getElementById("hours").textContent =
+    Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+  document.getElementById("minutes").textContent =
+    Math.floor((diff / (1000 * 60)) % 60);
+
+  document.getElementById("seconds").textContent =
+    Math.floor((diff / 1000) % 60);
+}
+
+update();
+setInterval(update, 1000);
+
+</script>
 
 </body>
 </html>
+
 
