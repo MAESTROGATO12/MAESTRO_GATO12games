@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,28 +14,46 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: #3b82f6;
+      filter: blur(150px);
+      opacity: 0.3;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-40px); }
+      100% { transform: translateY(0); }
     }
 
     .container {
       background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      padding: 40px;
-      border-radius: 20px;
+      backdrop-filter: blur(14px);
+      padding: 45px;
+      border-radius: 25px;
       text-align: center;
       max-width: 520px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.6);
+      box-shadow: 0 0 60px rgba(0,0,0,0.7);
+      z-index: 1;
     }
 
     h1 {
-      font-size: 36px;
+      font-size: 38px;
       margin-bottom: 10px;
     }
 
     .badge {
       display: inline-block;
-      background: #facc15;
+      background: linear-gradient(135deg, #facc15, #fde047);
       color: #1e293b;
-      padding: 6px 14px;
+      padding: 7px 18px;
       border-radius: 999px;
       font-weight: bold;
       margin-bottom: 20px;
@@ -45,28 +62,47 @@
     .desc {
       color: #cbd5f5;
       font-size: 16px;
+      margin-bottom: 25px;
+    }
+
+    .countdown {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
       margin-bottom: 30px;
     }
 
-    .fecha {
-      font-size: 22px;
+    .time-box {
+      background: rgba(0,0,0,0.4);
+      border-radius: 15px;
+      padding: 15px;
+      width: 100%;
+    }
+
+    .number {
+      font-size: 32px;
       font-weight: bold;
-      margin-bottom: 30px;
+      color: #38bdf8;
+    }
+
+    .label {
+      font-size: 12px;
+      color: #94a3b8;
     }
 
     button {
       background: linear-gradient(135deg, #3b82f6, #2563eb);
       border: none;
-      padding: 16px 34px;
+      padding: 16px 36px;
       font-size: 18px;
-      border-radius: 14px;
+      border-radius: 16px;
       color: white;
       cursor: not-allowed;
-      opacity: 0.7;
+      opacity: 0.75;
     }
 
     footer {
-      margin-top: 25px;
+      margin-top: 30px;
       font-size: 14px;
       color: #94a3b8;
     }
@@ -75,26 +111,61 @@
 
 <body>
 
+  <div class="glow"></div>
+
   <div class="container">
     <h1>🎮 Mi Juego de Roblox</h1>
-
     <div class="badge">🚧 EN DESARROLLO</div>
 
     <p class="desc">
-      Estamos trabajando en una experiencia divertida y única.
-      ¡Muy pronto podrás jugar!
+      Una nueva experiencia está en camino.<br>
+      Prepárate para algo épico.
     </p>
 
-    <div class="fecha">
-      📅 Sale el <span style="color:#38bdf8;">5 de marzo</span>
+    <div class="countdown">
+      <div class="time-box">
+        <div class="number" id="days">0</div>
+        <div class="label">DÍAS</div>
+      </div>
+      <div class="time-box">
+        <div class="number" id="hours">0</div>
+        <div class="label">HORAS</div>
+      </div>
+      <div class="time-box">
+        <div class="number" id="minutes">0</div>
+        <div class="label">MIN</div>
+      </div>
+      <div class="time-box">
+        <div class="number" id="seconds">0</div>
+        <div class="label">SEG</div>
+      </div>
     </div>
 
-    <button>No disponible todavía</button>
+    <button>Disponible el 5 de marzo</button>
 
     <footer>
       © 2026 · Juego de Roblox
     </footer>
   </div>
+
+  <script>
+    const releaseDate = new Date("March 5, 2026 00:00:00").getTime();
+
+    setInterval(() => {
+      const now = new Date().getTime();
+      const diff = releaseDate - now;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("days").innerText = days;
+      document.getElementById("hours").innerText = hours;
+      document.getElementById("minutes").innerText = minutes;
+      document.getElementById("seconds").innerText = seconds;
+    }, 1000);
+  </script>
 
 </body>
 </html>
