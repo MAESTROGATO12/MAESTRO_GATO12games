@@ -6,9 +6,10 @@
 
 <style>
 :root {
-  --bg: #060606;
-  --text: #e6e6e6;
+  --bg: #050505;
+  --text: #e5e5e5;
   --accent: #ff2a2a;
+  --ghost: #777;
 }
 
 * {
@@ -24,7 +25,7 @@ body {
   overflow: hidden;
 }
 
-/* ====== CENTER ====== */
+/* ===== STAGE ===== */
 #stage {
   height: 100%;
   display: flex;
@@ -34,33 +35,33 @@ body {
   transition: opacity 1s ease;
 }
 
-/* ====== TITLE ====== */
+/* ===== TITLE ===== */
 #title {
   font-size: clamp(3rem, 8vw, 6rem);
   letter-spacing: 6px;
-  position: relative;
-  transition: transform 0.2s ease;
+  transition: transform 0.15s ease, opacity 0.5s ease;
 }
 
-/* subtle pulse */
+/* breathing */
 #title {
-  animation: pulse 6s infinite;
+  animation: breathe 8s infinite;
 }
 
-@keyframes pulse {
+@keyframes breathe {
   0% { opacity: 0.85; }
   50% { opacity: 1; }
   100% { opacity: 0.85; }
 }
 
-/* ====== SUBTEXT ====== */
+/* ===== TEXT ===== */
 #text {
   margin-top: 20px;
   font-size: 0.9rem;
   opacity: 0.6;
+  transition: opacity 0.5s ease;
 }
 
-/* ====== GLITCH ====== */
+/* ===== GLITCH ===== */
 .glitch {
   animation: glitch 0.15s steps(2) infinite;
   color: var(--accent);
@@ -75,37 +76,37 @@ body {
   100% { transform: translate(0); }
 }
 
-/* ====== OVERLAY ====== */
+/* ===== OVERLAY ===== */
 #overlay {
   position: fixed;
   inset: 0;
   background: black;
   color: var(--accent);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   font-size: clamp(3rem, 10vw, 7rem);
   letter-spacing: 8px;
-  display: none;
-  animation: shake 0.15s infinite;
+  animation: shake 0.12s infinite;
 }
 
 @keyframes shake {
-  0% { transform: translate(0,0); }
+  0% { transform: translate(0); }
   25% { transform: translate(3px,2px); }
   50% { transform: translate(-3px,-2px); }
   75% { transform: translate(2px,-3px); }
-  100% { transform: translate(0,0); }
+  100% { transform: translate(0); }
 }
 
-/* ====== INVISIBLE TEXT ====== */
+/* ===== GHOST TEXT ===== */
 #ghost {
   position: absolute;
-  bottom: 15px;
+  bottom: 14px;
   width: 100%;
   text-align: center;
   font-size: 0.7rem;
-  opacity: 0.02;
+  opacity: 0.03;
+  color: var(--ghost);
 }
 </style>
 </head>
@@ -119,54 +120,70 @@ body {
   </div>
 </div>
 
-<div id="ghost">you noticed too much</div>
-
+<div id="ghost">you stayed longer than expected</div>
 <div id="overlay">RUN AWAY</div>
 
 <script>
-/* ====== MEMORY ====== */
+/* ===== MEMORY ===== */
 let visits = Number(localStorage.getItem("visits") || 0) + 1;
 localStorage.setItem("visits", visits);
 
-/* ====== LIES ====== */
+/* ===== LIES ROTATION ===== */
 const text = document.getElementById("text");
 const lies = [
   "nothing is happening",
   "everything is fine",
   "you are safe here",
   "there is nothing else",
-  "stop looking"
+  "stop looking",
+  "this page is empty",
+  "go away"
 ];
 
-text.textContent = lies[Math.floor(Math.random() * lies.length)];
+let lieIndex = 0;
+setInterval(() => {
+  lieIndex = (lieIndex + 1) % lies.length;
+  text.style.opacity = 0;
+  setTimeout(() => {
+    text.textContent = lies[lieIndex];
+    text.style.opacity = 0.6;
+  }, 400);
+}, 9000);
 
-/* ====== RETURN VISITOR ====== */
-if (visits >= 2) {
-  text.textContent = "you came back";
-}
-
+/* ===== VISITOR AWARENESS ===== */
+if (visits >= 2) text.textContent = "you came back";
 if (visits >= 4) {
   text.textContent = "you were warned";
   text.style.color = "var(--accent)";
 }
+if (visits >= 7) {
+  document.getElementById("ghost").textContent = "it remembers you";
+}
 
-/* ====== GLITCH RANDOM ====== */
+/* ===== GLITCH INTELLIGENT ===== */
 const title = document.getElementById("title");
 
-setInterval(() => {
+function glitchOnce() {
   title.classList.add("glitch");
-  setTimeout(() => title.classList.remove("glitch"), 400);
-}, Math.random() * 6000 + 6000);
+  setTimeout(() => title.classList.remove("glitch"), 350);
+}
 
-/* ====== RUN AWAY TRIGGER ====== */
+setInterval(glitchOnce, Math.random() * 8000 + 6000);
+
+/* ===== MOUSE REACTION ===== */
+document.addEventListener("mousemove", e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 6;
+  const y = (e.clientY / window.innerHeight - 0.5) * 6;
+  title.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+/* ===== RUN AWAY EVENT ===== */
 const overlay = document.getElementById("overlay");
 let clicks = 0;
 
 function runAway() {
   overlay.style.display = "flex";
-  setTimeout(() => {
-    overlay.style.display = "none";
-  }, 5000);
+  setTimeout(() => overlay.style.display = "none", 5000);
 }
 
 /* 3 clicks */
@@ -175,16 +192,25 @@ document.addEventListener("click", () => {
   if (clicks === 3) runAway();
 });
 
-/* secret word */
+/* secret typing */
 let typed = "";
 document.addEventListener("keydown", e => {
   typed += e.key.toLowerCase();
   if (typed.includes("run")) runAway();
   if (typed.length > 20) typed = "";
 });
+
+/* ===== ONE TIME EVENT ===== */
+if (!localStorage.getItem("firstFear")) {
+  setTimeout(() => {
+    text.textContent = "why are you still here";
+    localStorage.setItem("firstFear", "true");
+  }, 15000);
+}
 </script>
 
 </body>
 </html>
+
 
                                                                                                                   
