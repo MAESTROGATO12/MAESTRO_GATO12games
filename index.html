@@ -2,247 +2,278 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RUN FROM IT</title>
 
 <style>
+:root {
+  --red: #ff2b2b;
+  --dark: #050505;
+  --text: #e5e7eb;
+  --dim: #9ca3af;
+}
+
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(circle at top, #3b0a0a, #050000);
-  font-family: 'Segoe UI', Arial, sans-serif;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  font-family: system-ui, monospace;
+  background: radial-gradient(circle at top, #120000, #000);
+  color: var(--text);
+  overflow-x: hidden;
 }
 
-.bg {
+.layer {
   position: fixed;
   inset: 0;
+  pointer-events: none;
+}
+
+.noise {
   background:
-    radial-gradient(circle at 20% 30%, rgba(255,0,0,0.15), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(180,0,0,0.12), transparent 40%);
-  animation: drift 14s ease-in-out infinite alternate;
-}
-
-@keyframes drift {
-  from { transform: scale(1); }
-  to { transform: scale(1.1); }
-}
-
-.container {
-  position: relative;
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
   z-index: 1;
-  padding: 40px;
-  border-radius: 24px;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 0 60px rgba(255,0,0,0.15);
-  max-width: 600px;
-  width: 92%;
+}
+
+.vignette {
+  background: radial-gradient(circle, transparent 40%, black);
+  z-index: 2;
+}
+
+.app {
+  position: relative;
+  z-index: 5;
+}
+
+.hero {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
   text-align: center;
-  animation: appear 1.2s ease forwards;
+  padding: 120px 20px;
 }
 
-@keyframes appear {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+.title {
+  position: relative;
+  font-size: clamp(3rem, 7vw, 5rem);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 30px;
 }
 
-h1 {
-  font-size: 3rem;
-  margin: 0;
-  letter-spacing: 4px;
-  cursor: pointer;
-  animation: glow 4s ease-in-out infinite;
+.title span {
+  color: var(--red);
 }
 
-@keyframes glow {
-  0%,100% { text-shadow: 0 0 10px rgba(255,0,0,0.4); }
-  50% { text-shadow: 0 0 25px rgba(255,0,0,0.9); }
+.title::before,
+.title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
 }
 
-.status {
-  margin-top: 10px;
-  opacity: 0.85;
+.title.glitch::before {
+  color: var(--red);
+  opacity: 0.8;
+  animation: glitchA 0.25s infinite;
 }
 
-.date {
-  margin-top: 18px;
-  font-size: 1.2rem;
-  color: #ff4d4d;
+.title.glitch::after {
+  color: white;
+  opacity: 0.8;
+  animation: glitchB 0.25s infinite;
+}
+
+@keyframes glitchA {
+  0% { transform: translate(0); clip-path: inset(0 0 60% 0); }
+  50% { transform: translate(-4px,-2px); clip-path: inset(0 0 30% 0); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitchB {
+  0% { transform: translate(0); clip-path: inset(60% 0 0 0); }
+  50% { transform: translate(4px,2px); clip-path: inset(30% 0 0 0); }
+  100% { transform: translate(0); }
+}
+
+.tagline {
+  color: var(--dim);
+  margin-bottom: 60px;
+  line-height: 1.7;
 }
 
 .countdown {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-top: 30px;
+  gap: 25px;
+  max-width: 600px;
+  margin: 0 auto 80px;
 }
 
-.box {
-  background: rgba(0,0,0,0.4);
-  border-radius: 16px;
-  padding: 18px 8px;
+.time {
+  border: 1px solid rgba(255,0,0,0.3);
+  padding: 25px 10px;
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
 }
 
-.num {
-  font-size: 2.2rem;
-  font-weight: bold;
+.value {
+  font-size: 2.3rem;
+  color: var(--red);
 }
 
-.lbl {
+.label {
   font-size: 0.7rem;
-  letter-spacing: 1px;
-  opacity: 0.6;
-}
-
-.message {
-  margin-top: 20px;
-  min-height: 22px;
-  font-size: 0.9rem;
-  opacity: 0.7;
+  letter-spacing: 2px;
+  margin-top: 8px;
 }
 
 .discord {
-  margin-top: 26px;
+  margin-top: 60px;
 }
 
 .discord a {
-  color: #ff3b3b;
+  color: var(--red);
   text-decoration: none;
-  font-weight: bold;
-  letter-spacing: 1px;
+  border: 1px solid var(--red);
+  padding: 14px 28px;
+  border-radius: 40px;
+  letter-spacing: 2px;
+  transition: 0.3s;
 }
 
-footer {
-  margin-top: 30px;
-  font-size: 0.75rem;
-  opacity: 0.5;
+.discord a:hover {
+  background: var(--red);
+  color: black;
 }
 
-@media (max-width: 520px) {
-  .countdown { grid-template-columns: repeat(2, 1fr); }
-  h1 { font-size: 2.3rem; }
+.footer {
+  padding: 80px 20px;
+  text-align: center;
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+/* RUN AWAY */
+@keyframes shake {
+  0% { transform: translate(0); }
+  25% { transform: translate(-6px,3px); }
+  50% { transform: translate(6px,-3px); }
+  75% { transform: translate(-5px,2px); }
+  100% { transform: translate(0); }
 }
 </style>
 </head>
 
 <body>
-<div class="bg"></div>
 
-<div class="container">
-  <h1 id="title">RUN FROM IT</h1>
-  <div class="status">🚧 En desarrollo</div>
-  <div class="date">Lanzamiento: 14 de julio de 2026</div>
+<div class="layer noise"></div>
+<div class="layer vignette"></div>
+
+<div class="app">
+
+<section class="hero">
+  <h1 class="title" id="title" data-text="RUN FROM IT">
+    RUN <span>FROM</span> IT
+  </h1>
+
+  <p class="tagline">
+    No weapons. No escape.<br>
+    It learns every time you run.
+  </p>
 
   <div class="countdown">
-    <div class="box"><div class="num" id="days">0</div><div class="lbl">DÍAS</div></div>
-    <div class="box"><div class="num" id="hours">0</div><div class="lbl">HORAS</div></div>
-    <div class="box"><div class="num" id="minutes">0</div><div class="lbl">MINUTOS</div></div>
-    <div class="box"><div class="num" id="seconds">0</div><div class="lbl">SEGUNDOS</div></div>
+    <div class="time"><div class="value" id="d">0</div><div class="label">DÍAS</div></div>
+    <div class="time"><div class="value" id="h">0</div><div class="label">HORAS</div></div>
+    <div class="time"><div class="value" id="m">0</div><div class="label">MIN</div></div>
+    <div class="time"><div class="value" id="s">0</div><div class="label">SEG</div></div>
   </div>
-
-  <div class="message" id="msg"></div>
 
   <div class="discord">
-    <a href="https://discord.gg/fcfyeE3NAH" target="_blank">ÚNETE AL DISCORD</a>
+    <a href="https://discord.gg/fcfyeE3NAH" target="_blank">
+      JOIN DISCORD
+    </a>
   </div>
+</section>
 
-  <footer>© 2026 · RUN FROM IT</footer>
+<div class="footer">
+  © 2026 · RUN FROM IT · Roblox Experience
+</div>
+
 </div>
 
 <script>
-/* =========================
-   CONTADOR BASE
-========================= */
-const releaseDate = new Date("July 14, 2026 00:00:00").getTime();
-let lieFreeze = false;
-const messages = [
-  "Why are you trusting a timer?",
-  "It moved.",
-  "Time is not stable.",
-  "You were faster yesterday.",
-  "Don't stop."
-];
-
+// COUNTDOWN
+const release = new Date("July 14, 2026 00:00:00").getTime();
 setInterval(() => {
-  if (lieFreeze) return;
-
   const now = Date.now();
-  let dist = releaseDate - now;
-  if (dist < 0) return;
-
-  document.getElementById("days").textContent = Math.floor(dist / 86400000);
-  document.getElementById("hours").textContent = Math.floor((dist / 3600000) % 24);
-  document.getElementById("minutes").textContent = Math.floor((dist / 60000) % 60);
-  document.getElementById("seconds").textContent = Math.floor((dist / 1000) % 60);
-
-  corrupt();
+  const diff = release - now;
+  if (diff < 0) return;
+  d.textContent = Math.floor(diff / 86400000);
+  h.textContent = Math.floor(diff / 3600000) % 24;
+  m.textContent = Math.floor(diff / 60000) % 60;
+  s.textContent = Math.floor(diff / 1000) % 60;
 }, 1000);
 
-/* =========================
-   OPCIÓN 3 — CONTADOR MENTIROSO
-========================= */
-function corrupt() {
-  const r = Math.random();
-
-  if (r < 0.08) {
-    lieFreeze = true;
-    setTimeout(() => lieFreeze = false, 2500);
-  }
-
-  if (r >= 0.08 && r < 0.14) {
-    document.getElementById("seconds").textContent++;
-  }
-
-  if (r >= 0.14 && r < 0.18) {
-    document.getElementById("msg").textContent =
-      messages[Math.floor(Math.random() * messages.length)];
-    setTimeout(() => document.getElementById("msg").textContent = "", 3000);
-  }
+// GLITCH
+const title = document.getElementById("title");
+function glitch() {
+  title.classList.add("glitch");
+  setTimeout(() => title.classList.remove("glitch"), 300);
+  setTimeout(glitch, Math.random() * 5000 + 5000);
 }
+glitch();
 
-/* =========================
-   OPCIÓN 2 — EASTER EGGS
-========================= */
+// EASTER EGG
 let clicks = 0;
-let clickTimer = null;
+let active = false;
 
-document.getElementById("title").addEventListener("click", () => {
+document.addEventListener("click", () => {
+  if (active) return;
   clicks++;
-  clearTimeout(clickTimer);
-  clickTimer = setTimeout(() => clicks = 0, 600);
-
-  if (clicks === 3) activateEgg();
+  if (clicks === 3) runAway();
+  setTimeout(() => clicks = 0, 1000);
 });
 
-function activateEgg() {
-  document.body.style.background = "black";
+function runAway() {
+  active = true;
+  const original = document.body.innerHTML;
+
   document.body.innerHTML = `
     <div style="
-      color:white;
-      font-family:monospace;
-      font-size:clamp(2rem,6vw,5rem);
+      background:black;
+      color:red;
+      height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      height:100vh;
-      letter-spacing:0.3em;
-      animation:flicker 1.4s infinite;
-    ">TOO&nbsp;LATE</div>
+      font-family:monospace;
+      font-size:clamp(3rem,7vw,6rem);
+      letter-spacing:0.4em;
+      animation:shake 0.4s infinite;
+      text-shadow:0 0 15px red;">
+      RUN&nbsp;AWAY
+    </div>
   `;
-}
 
-if (new Date().getHours() === 3 && new Date().getMinutes() === 33) {
-  document.getElementById("msg").textContent = "It is awake.";
+  setTimeout(() => {
+    document.body.innerHTML = original;
+    active = false;
+  }, 5000);
 }
 </script>
+
 </body>
 </html>
+
                                                                                                                    
