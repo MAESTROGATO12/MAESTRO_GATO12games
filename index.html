@@ -21,7 +21,7 @@
       overflow: hidden;
     }
 
-    /* ===== FONDO CON GRANO ===== */
+    /* ===== GRANO DE FONDO ===== */
     body::before {
       content: "";
       position: fixed;
@@ -41,32 +41,60 @@
       position: relative;
     }
 
-    /* ===== TITULO ===== */
-    h1 {
-      margin: 0;
+    /* ===== TITULO CON GLITCH ===== */
+    .glitch {
+      position: relative;
       font-size: 3.2rem;
       letter-spacing: 6px;
       color: #f9fafb;
       text-transform: uppercase;
-      animation: pulse 4s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0% { opacity: 0.9; }
-      50% { opacity: 1; }
-      100% { opacity: 0.9; }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .glitch::before {
+      color: #38bdf8;
+      animation: glitchTop 3.5s infinite linear alternate-reverse;
+    }
+
+    .glitch::after {
+      color: #a78bfa;
+      animation: glitchBottom 4s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitchTop {
+      0%, 95%, 100% { transform: translate(0); }
+      96% { transform: translate(-2px, -2px); }
+      97% { transform: translate(2px, 2px); }
+      98% { transform: translate(-1px, 1px); }
+    }
+
+    @keyframes glitchBottom {
+      0%, 92%, 100% { transform: translate(0); }
+      93% { transform: translate(2px, 1px); }
+      94% { transform: translate(-2px, -1px); }
+      95% { transform: translate(1px, -2px); }
     }
 
     /* ===== SUBTEXTO ===== */
     .subtitle {
-      margin-top: 14px;
-      font-size: 0.95rem;
+      margin-top: 16px;
+      font-size: 0.9rem;
       letter-spacing: 2px;
       color: #9ca3af;
       text-transform: uppercase;
     }
 
-    /* ===== DIVISOR ===== */
+    /* ===== LINEA ===== */
     .line {
       width: 120px;
       height: 1px;
@@ -80,7 +108,7 @@
       font-size: 1.05rem;
       color: #d1d5db;
       line-height: 1.6;
-      margin-bottom: 36px;
+      margin-bottom: 38px;
     }
 
     /* ===== CONTADOR ===== */
@@ -109,7 +137,6 @@
       margin-top: 6px;
     }
 
-    /* ===== FOOTER ===== */
     footer {
       margin-top: 50px;
       font-size: 0.7rem;
@@ -118,7 +145,7 @@
     }
 
     @media (max-width: 520px) {
-      h1 { font-size: 2.3rem; }
+      .glitch { font-size: 2.3rem; }
       .value { font-size: 2rem; }
     }
   </style>
@@ -127,7 +154,7 @@
 <body>
 
   <div class="container">
-    <h1>RUN FROM IT</h1>
+    <div class="glitch" data-text="RUN FROM IT">RUN FROM IT</div>
     <div class="subtitle">Roblox Game</div>
 
     <div class="line"></div>
@@ -185,4 +212,3 @@
 
 </body>
 </html>
-
