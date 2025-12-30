@@ -19,17 +19,17 @@
 
     .glow {
       position: absolute;
-      width: 400px;
-      height: 400px;
+      width: 420px;
+      height: 420px;
       background: #3b82f6;
-      filter: blur(150px);
+      filter: blur(160px);
       opacity: 0.3;
       animation: float 6s ease-in-out infinite;
     }
 
     @keyframes float {
       0% { transform: translateY(0); }
-      50% { transform: translateY(-40px); }
+      50% { transform: translateY(-50px); }
       100% { transform: translateY(0); }
     }
 
@@ -90,7 +90,7 @@
       color: #94a3b8;
     }
 
-    button {
+    button.launch {
       background: linear-gradient(135deg, #3b82f6, #2563eb);
       border: none;
       padding: 16px 36px;
@@ -105,6 +105,20 @@
       margin-top: 30px;
       font-size: 14px;
       color: #94a3b8;
+    }
+
+    #musicBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.65);
+      border: none;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 10;
     }
   </style>
 </head>
@@ -141,31 +155,58 @@
       </div>
     </div>
 
-    <button>Disponible el 5 de marzo</button>
+    <button class="launch">Disponible el 5 de marzo</button>
 
     <footer>
       © 2026 · Juego de Roblox
     </footer>
   </div>
 
+  <!-- Música -->
+  <audio id="bgMusic" loop>
+    <source src="audio/music.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="musicBtn">🔊 Activar música</button>
+
   <script>
+    // CONTADOR
     const releaseDate = new Date("March 5, 2026 00:00:00").getTime();
 
     setInterval(() => {
       const now = new Date().getTime();
       const diff = releaseDate - now;
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+      const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+      const hours = Math.max(0, Math.floor((diff / (1000 * 60 * 60)) % 24));
+      const minutes = Math.max(0, Math.floor((diff / (1000 * 60)) % 60));
+      const seconds = Math.max(0, Math.floor((diff / 1000) % 60));
 
       document.getElementById("days").innerText = days;
       document.getElementById("hours").innerText = hours;
       document.getElementById("minutes").innerText = minutes;
       document.getElementById("seconds").innerText = seconds;
     }, 1000);
+
+    // MÚSICA
+    const music = document.getElementById("bgMusic");
+    const btn = document.getElementById("musicBtn");
+    let playing = false;
+
+    btn.onclick = () => {
+      if (!playing) {
+        music.volume = 0.4;
+        music.play();
+        btn.innerText = "🔇 Pausar música";
+        playing = true;
+      } else {
+        music.pause();
+        btn.innerText = "🔊 Activar música";
+        playing = false;
+      }
+    };
   </script>
 
 </body>
 </html>
+
