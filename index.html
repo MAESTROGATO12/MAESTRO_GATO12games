@@ -7,71 +7,67 @@
 
 <style>
 :root {
-  --red: #ff2b2b;
-  --dark: #050505;
-  --text: #e5e7eb;
-  --dim: #9ca3af;
+  --bg-black: #000;
+  --bg-dark: #020617;
+
+  --c-main: #ef4444;
+  --c-glitch1: #ef4444;
+  --c-glitch2: #ffffff;
+
+  --text-main: #e5e7eb;
+  --text-dim: #9ca3af;
+  --text-faint: #6b7280;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
 
 body {
   font-family: system-ui, monospace;
-  background: radial-gradient(circle at top, #120000, #000);
-  color: var(--text);
+  background: radial-gradient(circle at top, var(--bg-dark), var(--bg-black));
+  color: var(--text-main);
   overflow-x: hidden;
 }
 
+/* BACKGROUND */
 .layer {
   position: fixed;
   inset: 0;
   pointer-events: none;
 }
 
-.noise {
-  background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255,255,255,0.03),
-      rgba(255,255,255,0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-  z-index: 1;
+.layer.noise {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  opacity: 0.3;
 }
 
-.vignette {
-  background: radial-gradient(circle, transparent 40%, black);
-  z-index: 2;
+.layer.vignette {
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
 }
 
+/* LAYOUT */
 .app {
-  position: relative;
-  z-index: 5;
-}
-
-.hero {
   min-height: 100vh;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-  padding: 120px 20px;
+  padding: 120px 24px;
 }
 
+/* TITLE */
 .title {
   position: relative;
   font-size: clamp(3rem, 7vw, 5rem);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
+  letter-spacing: 0.35em;
   margin-bottom: 30px;
-}
-
-.title span {
-  color: var(--red);
 }
 
 .title::before,
@@ -82,95 +78,75 @@ body {
   opacity: 0;
 }
 
+.title::before { color: var(--c-glitch1); }
+.title::after  { color: var(--c-glitch2); }
+
 .title.glitch::before {
-  color: var(--red);
   opacity: 0.8;
-  animation: glitchA 0.25s infinite;
+  animation: glitchA 0.25s steps(2) infinite;
 }
 
 .title.glitch::after {
-  color: white;
   opacity: 0.8;
-  animation: glitchB 0.25s infinite;
+  animation: glitchB 0.25s steps(2) infinite;
 }
 
 @keyframes glitchA {
   0% { transform: translate(0); clip-path: inset(0 0 60% 0); }
   50% { transform: translate(-4px,-2px); clip-path: inset(0 0 30% 0); }
-  100% { transform: translate(0); }
 }
 
 @keyframes glitchB {
   0% { transform: translate(0); clip-path: inset(60% 0 0 0); }
   50% { transform: translate(4px,2px); clip-path: inset(30% 0 0 0); }
-  100% { transform: translate(0); }
 }
 
+/* TEXT */
 .tagline {
-  color: var(--dim);
-  margin-bottom: 60px;
-  line-height: 1.7;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+  margin-bottom: 50px;
 }
 
-.countdown {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-  max-width: 600px;
-  margin: 0 auto 80px;
-}
-
-.time {
-  border: 1px solid rgba(255,0,0,0.3);
-  padding: 25px 10px;
-  border-radius: 14px;
-  backdrop-filter: blur(6px);
-}
-
-.value {
-  font-size: 2.3rem;
-  color: var(--red);
-}
-
-.label {
-  font-size: 0.7rem;
+.presence {
+  margin-top: 40px;
+  font-size: 0.85rem;
+  color: var(--c-main);
   letter-spacing: 2px;
-  margin-top: 8px;
+  min-height: 1.2em;
 }
 
+/* DISCORD */
 .discord {
-  margin-top: 60px;
+  margin-top: 80px;
+  font-size: 0.8rem;
 }
 
 .discord a {
-  color: var(--red);
+  color: var(--c-main);
   text-decoration: none;
-  border: 1px solid var(--red);
-  padding: 14px 28px;
-  border-radius: 40px;
   letter-spacing: 2px;
-  transition: 0.3s;
 }
 
 .discord a:hover {
-  background: var(--red);
-  color: black;
+  text-decoration: underline;
 }
 
+/* FOOTER */
 .footer {
-  padding: 80px 20px;
-  text-align: center;
-  font-size: 0.7rem;
-  color: #6b7280;
+  margin-top: 120px;
+  font-size: 0.65rem;
+  color: var(--text-faint);
 }
 
 /* RUN AWAY */
 @keyframes shake {
   0% { transform: translate(0); }
-  25% { transform: translate(-6px,3px); }
-  50% { transform: translate(6px,-3px); }
-  75% { transform: translate(-5px,2px); }
-  100% { transform: translate(0); }
+  20% { transform: translate(-6px,3px); }
+  40% { transform: translate(6px,-3px); }
+  60% { transform: translate(-5px,2px); }
+  80% { transform: translate(5px,-2px); }
 }
 </style>
 </head>
@@ -181,71 +157,60 @@ body {
 <div class="layer vignette"></div>
 
 <div class="app">
-
-<section class="hero">
-  <h1 class="title" id="title" data-text="RUN FROM IT">
-    RUN <span>FROM</span> IT
-  </h1>
+  <h1 class="title" id="title" data-text="RUN FROM IT">RUN FROM IT</h1>
 
   <p class="tagline">
-    No weapons. No escape.<br>
-    It learns every time you run.
+    You are not supposed to understand.<br>
+    You are supposed to leave.
   </p>
 
-  <div class="countdown">
-    <div class="time"><div class="value" id="d">0</div><div class="label">DÍAS</div></div>
-    <div class="time"><div class="value" id="h">0</div><div class="label">HORAS</div></div>
-    <div class="time"><div class="value" id="m">0</div><div class="label">MIN</div></div>
-    <div class="time"><div class="value" id="s">0</div><div class="label">SEG</div></div>
-  </div>
+  <p class="presence" id="presence"></p>
 
   <div class="discord">
     <a href="https://discord.gg/fcfyeE3NAH" target="_blank">
-      JOIN DISCORD
+      ENTER DISCORD
     </a>
   </div>
-</section>
 
-<div class="footer">
-  © 2026 · RUN FROM IT · Roblox Experience
-</div>
-
+  <div class="footer">
+    Nothing here is waiting for you.
+  </div>
 </div>
 
 <script>
-// COUNTDOWN
-const release = new Date("July 14, 2026 00:00:00").getTime();
-setInterval(() => {
-  const now = Date.now();
-  const diff = release - now;
-  if (diff < 0) return;
-  d.textContent = Math.floor(diff / 86400000);
-  h.textContent = Math.floor(diff / 3600000) % 24;
-  m.textContent = Math.floor(diff / 60000) % 60;
-  s.textContent = Math.floor(diff / 1000) % 60;
-}, 1000);
-
-// GLITCH
+/* GLITCH RANDOM */
 const title = document.getElementById("title");
 function glitch() {
   title.classList.add("glitch");
   setTimeout(() => title.classList.remove("glitch"), 300);
-  setTimeout(glitch, Math.random() * 5000 + 5000);
+  setTimeout(glitch, Math.random() * 7000 + 5000);
 }
 glitch();
 
-// EASTER EGG
+/* PRESENCE TIMER */
+const presence = document.getElementById("presence");
+const start = Date.now();
+
+setInterval(() => {
+  const t = Math.floor((Date.now() - start) / 1000);
+
+  if (t > 10 && t < 20) presence.textContent = "You’re still here.";
+  else if (t > 30 && t < 45) presence.textContent = "You were supposed to leave.";
+  else if (t > 60) presence.textContent = "It knows how long you’ve been watching.";
+}, 1000);
+
+/* EASTER EGG — 3 CLICKS */
 let clicks = 0;
 let active = false;
 
 document.addEventListener("click", () => {
   if (active) return;
   clicks++;
-  if (clicks === 3) runAway();
-  setTimeout(() => clicks = 0, 1000);
+  if (clicks === 3) activate();
+  setTimeout(() => clicks = 0, 1200);
 });
 
-function runAway() {
+function activate() {
   active = true;
   const original = document.body.innerHTML;
 
@@ -253,17 +218,16 @@ function runAway() {
     <div style="
       background:black;
       color:red;
+      font-family:monospace;
+      font-size:clamp(3rem,7vw,6rem);
+      letter-spacing:0.35em;
       height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-family:monospace;
-      font-size:clamp(3rem,7vw,6rem);
-      letter-spacing:0.4em;
       animation:shake 0.4s infinite;
-      text-shadow:0 0 15px red;">
-      RUN&nbsp;AWAY
-    </div>
+      text-shadow:0 0 20px red;
+    ">RUN&nbsp;AWAY</div>
   `;
 
   setTimeout(() => {
