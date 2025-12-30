@@ -2,251 +2,247 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RUN FROM IT</title>
 
 <style>
-:root {
-  --bg: #020617;
-  --black: #000;
-  --red: #ef4444;
-  --violet: #a78bfa;
-  --discord: #5865F2;
-  --text: #e5e7eb;
-  --dim: #9ca3af;
+* {
+  box-sizing: border-box;
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
 
 body {
-  font-family: system-ui, sans-serif;
-  background: radial-gradient(circle at top, var(--bg), var(--black));
-  color: var(--text);
-  overflow-x: hidden;
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #3b0a0a, #050000);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.layer {
+.bg {
   position: fixed;
   inset: 0;
-  pointer-events: none;
-}
-
-.glow {
   background:
-    radial-gradient(circle at 20% 20%, rgba(239,68,68,.12), transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(167,139,250,.12), transparent 40%);
-  animation: float 18s ease-in-out infinite alternate;
+    radial-gradient(circle at 20% 30%, rgba(255,0,0,0.15), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(180,0,0,0.12), transparent 40%);
+  animation: drift 14s ease-in-out infinite alternate;
 }
 
-@keyframes float {
-  to { transform: scale(1.15); }
+@keyframes drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
 }
 
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.hero {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding: 120px 20px;
-}
-
-.title {
+.container {
   position: relative;
-  font-size: clamp(3rem, 7vw, 5rem);
-  letter-spacing: .35em;
-  text-transform: uppercase;
+  z-index: 1;
+  padding: 40px;
+  border-radius: 24px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 60px rgba(255,0,0,0.15);
+  max-width: 600px;
+  width: 92%;
+  text-align: center;
+  animation: appear 1.2s ease forwards;
 }
 
-.title span { color: var(--red); }
-
-.title::before,
-.title::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  opacity: 0;
+@keyframes appear {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.title::before { color: var(--red); }
-.title::after { color: var(--violet); }
-
-.glitch::before {
-  opacity: 1;
-  animation: glitchA .3s infinite;
+h1 {
+  font-size: 3rem;
+  margin: 0;
+  letter-spacing: 4px;
+  cursor: pointer;
+  animation: glow 4s ease-in-out infinite;
 }
 
-.glitch::after {
-  opacity: 1;
-  animation: glitchB .3s infinite;
+@keyframes glow {
+  0%,100% { text-shadow: 0 0 10px rgba(255,0,0,0.4); }
+  50% { text-shadow: 0 0 25px rgba(255,0,0,0.9); }
 }
 
-@keyframes glitchA {
-  50% { transform: translate(-3px,-2px); }
-}
-@keyframes glitchB {
-  50% { transform: translate(3px,2px); }
+.status {
+  margin-top: 10px;
+  opacity: 0.85;
 }
 
-.tagline {
-  margin: 30px 0 60px;
-  color: var(--dim);
-  line-height: 1.8;
+.date {
+  margin-top: 18px;
+  font-size: 1.2rem;
+  color: #ff4d4d;
 }
 
 .countdown {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-  max-width: 600px;
-  margin: auto;
+  gap: 14px;
+  margin-top: 30px;
 }
 
 .box {
-  background: rgba(255,255,255,.04);
-  padding: 25px 10px;
+  background: rgba(0,0,0,0.4);
   border-radius: 16px;
+  padding: 18px 8px;
 }
 
 .num {
-  font-size: 2.4rem;
-  color: var(--red);
+  font-size: 2.2rem;
+  font-weight: bold;
 }
 
 .lbl {
-  font-size: .7rem;
-  letter-spacing: 2px;
-  color: var(--dim);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  opacity: 0.6;
+}
+
+.message {
+  margin-top: 20px;
+  min-height: 22px;
+  font-size: 0.9rem;
+  opacity: 0.7;
 }
 
 .discord {
-  margin-top: 70px;
-  display: inline-block;
-  padding: 14px 40px;
-  border-radius: 999px;
-  border: 1px solid var(--discord);
-  color: var(--discord);
+  margin-top: 26px;
+}
+
+.discord a {
+  color: #ff3b3b;
   text-decoration: none;
-  letter-spacing: 3px;
-  font-size: .75rem;
-  transition: .3s;
-}
-
-.discord:hover {
-  background: rgba(88,101,242,.25);
-  box-shadow: 0 0 25px rgba(88,101,242,.6);
-  transform: translateY(-3px);
-}
-
-#too-late {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: monospace;
-  font-size: clamp(3rem, 8vw, 6rem);
-  letter-spacing: .4em;
-  z-index: 9999;
-  animation: flicker 1.5s infinite;
-}
-
-@keyframes flicker {
-  50% { opacity: .2; }
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
 footer {
-  text-align: center;
-  padding: 60px 20px;
-  font-size: .7rem;
-  color: #6b7280;
+  margin-top: 30px;
+  font-size: 0.75rem;
+  opacity: 0.5;
 }
 
-@media(max-width:700px){
-  .countdown{grid-template-columns:repeat(2,1fr)}
+@media (max-width: 520px) {
+  .countdown { grid-template-columns: repeat(2, 1fr); }
+  h1 { font-size: 2.3rem; }
 }
 </style>
 </head>
 
 <body>
+<div class="bg"></div>
 
-<div class="layer glow"></div>
+<div class="container">
+  <h1 id="title">RUN FROM IT</h1>
+  <div class="status">🚧 En desarrollo</div>
+  <div class="date">Lanzamiento: 14 de julio de 2026</div>
 
-<div class="app">
-  <section class="hero">
-    <h1 class="title" id="title" data-text="RUN FROM IT">
-      RUN <span>FROM</span> IT
-    </h1>
+  <div class="countdown">
+    <div class="box"><div class="num" id="days">0</div><div class="lbl">DÍAS</div></div>
+    <div class="box"><div class="num" id="hours">0</div><div class="lbl">HORAS</div></div>
+    <div class="box"><div class="num" id="minutes">0</div><div class="lbl">MINUTOS</div></div>
+    <div class="box"><div class="num" id="seconds">0</div><div class="lbl">SEGUNDOS</div></div>
+  </div>
 
-    <p class="tagline">
-      No weapons. No safe zones.<br>
-      Only instinct… and something that learns.
-    </p>
+  <div class="message" id="msg"></div>
 
-    <div class="countdown">
-      <div class="box"><div class="num" id="d">0</div><div class="lbl">DÍAS</div></div>
-      <div class="box"><div class="num" id="h">0</div><div class="lbl">HORAS</div></div>
-      <div class="box"><div class="num" id="m">0</div><div class="lbl">MIN</div></div>
-      <div class="box"><div class="num" id="s">0</div><div class="lbl">SEG</div></div>
-    </div>
+  <div class="discord">
+    <a href="https://discord.gg/fcfyeE3NAH" target="_blank">ÚNETE AL DISCORD</a>
+  </div>
 
-    <a class="discord" href="https://discord.gg/fcfyeE3NAH" target="_blank">
-      JOIN DISCORD
-    </a>
-  </section>
-
-  <footer>
-    © 2026 · RUN FROM IT · Roblox Experience
-  </footer>
+  <footer>© 2026 · RUN FROM IT</footer>
 </div>
 
 <script>
-const target = new Date("July 14, 2026 00:00:00").getTime();
+/* =========================
+   CONTADOR BASE
+========================= */
+const releaseDate = new Date("July 14, 2026 00:00:00").getTime();
+let lieFreeze = false;
+const messages = [
+  "Why are you trusting a timer?",
+  "It moved.",
+  "Time is not stable.",
+  "You were faster yesterday.",
+  "Don't stop."
+];
 
-setInterval(()=>{
+setInterval(() => {
+  if (lieFreeze) return;
+
   const now = Date.now();
-  const diff = target - now;
-  if(diff<0)return;
-  d.textContent = Math.floor(diff/86400000);
-  h.textContent = Math.floor(diff/3600000)%24;
-  m.textContent = Math.floor(diff/60000)%60;
-  s.textContent = Math.floor(diff/1000)%60;
-},1000);
+  let dist = releaseDate - now;
+  if (dist < 0) return;
 
-const title = document.getElementById("title");
-function glitch(){
-  title.classList.add("glitch");
-  setTimeout(()=>title.classList.remove("glitch"),300);
-}
-(function loop(){
-  glitch();
-  setTimeout(loop,Math.random()*6000+5000);
-})();
+  document.getElementById("days").textContent = Math.floor(dist / 86400000);
+  document.getElementById("hours").textContent = Math.floor((dist / 3600000) % 24);
+  document.getElementById("minutes").textContent = Math.floor((dist / 60000) % 60);
+  document.getElementById("seconds").textContent = Math.floor((dist / 1000) % 60);
 
-let secret="runfromit",buf="",used=false;
-document.addEventListener("keydown",e=>{
-  if(used||e.key.length!==1)return;
-  buf+=(e.key.toLowerCase());
-  buf=buf.slice(-secret.length);
-  if(buf===secret){
-    used=true;
-    const o=document.createElement("div");
-    o.id="too-late";
-    o.textContent="TOO LATE";
-    document.body.appendChild(o);
-    setTimeout(()=>o.remove(),4000);
+  corrupt();
+}, 1000);
+
+/* =========================
+   OPCIÓN 3 — CONTADOR MENTIROSO
+========================= */
+function corrupt() {
+  const r = Math.random();
+
+  if (r < 0.08) {
+    lieFreeze = true;
+    setTimeout(() => lieFreeze = false, 2500);
   }
-});
-</script>
 
+  if (r >= 0.08 && r < 0.14) {
+    document.getElementById("seconds").textContent++;
+  }
+
+  if (r >= 0.14 && r < 0.18) {
+    document.getElementById("msg").textContent =
+      messages[Math.floor(Math.random() * messages.length)];
+    setTimeout(() => document.getElementById("msg").textContent = "", 3000);
+  }
+}
+
+/* =========================
+   OPCIÓN 2 — EASTER EGGS
+========================= */
+let clicks = 0;
+let clickTimer = null;
+
+document.getElementById("title").addEventListener("click", () => {
+  clicks++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => clicks = 0, 600);
+
+  if (clicks === 3) activateEgg();
+});
+
+function activateEgg() {
+  document.body.style.background = "black";
+  document.body.innerHTML = `
+    <div style="
+      color:white;
+      font-family:monospace;
+      font-size:clamp(2rem,6vw,5rem);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      letter-spacing:0.3em;
+      animation:flicker 1.4s infinite;
+    ">TOO&nbsp;LATE</div>
+  `;
+}
+
+if (new Date().getHours() === 3 && new Date().getMinutes() === 33) {
+  document.getElementById("msg").textContent = "It is awake.";
+}
+</script>
 </body>
 </html>
-
-                                                                                                                     hazlo con esta pagina
+                                                                                                                   
