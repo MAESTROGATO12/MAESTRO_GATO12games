@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Juego de Roblox | Próximamente</title>
+  <title>RUN FROM IT | Próximamente</title>
 
   <style>
     * {
@@ -28,43 +28,37 @@
         radial-gradient(circle at 20% 20%, rgba(56,189,248,0.15), transparent 40%),
         radial-gradient(circle at 80% 30%, rgba(167,139,250,0.15), transparent 40%),
         radial-gradient(circle at 50% 80%, rgba(34,197,94,0.12), transparent 40%);
-      animation: floatBg 12s ease-in-out infinite alternate;
+      animation: floatBg 14s ease-in-out infinite alternate;
     }
 
     @keyframes floatBg {
       from { transform: scale(1); }
-      to { transform: scale(1.1); }
+      to { transform: scale(1.12); }
     }
 
     .wrapper {
       position: relative;
       z-index: 1;
       text-align: center;
-      padding: 40px;
-      border-radius: 22px;
+      padding: 42px;
+      border-radius: 24px;
       background: rgba(255,255,255,0.08);
       backdrop-filter: blur(12px);
-      box-shadow: 0 0 50px rgba(0,0,0,0.6);
+      box-shadow: 0 0 60px rgba(0,0,0,0.65);
       max-width: 560px;
       width: 90%;
       animation: fadeUp 1.2s ease forwards;
     }
 
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
       margin: 0;
-      font-size: 2.6rem;
-      letter-spacing: 1px;
+      font-size: 2.8rem;
+      letter-spacing: 2px;
     }
 
     .status {
@@ -73,8 +67,14 @@
       opacity: 0.9;
     }
 
+    .dynamic-text {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      opacity: 0.75;
+    }
+
     .date {
-      margin-top: 20px;
+      margin-top: 22px;
       font-size: 1.2rem;
       color: #38bdf8;
       font-weight: 600;
@@ -84,7 +84,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 14px;
-      margin-top: 30px;
+      margin-top: 32px;
     }
 
     .time-box {
@@ -92,11 +92,10 @@
       border-radius: 16px;
       padding: 18px 10px;
       box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
-      animation: fadeUp 1.2s ease forwards;
     }
 
     .number {
-      font-size: 2.1rem;
+      font-size: 2.2rem;
       font-weight: bold;
     }
 
@@ -108,13 +107,13 @@
     }
 
     footer {
-      margin-top: 30px;
+      margin-top: 34px;
       font-size: 0.75rem;
       opacity: 0.6;
     }
 
     @media (max-width: 520px) {
-      h1 { font-size: 2rem; }
+      h1 { font-size: 2.1rem; }
       .countdown { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
@@ -124,8 +123,9 @@
   <div class="background"></div>
 
   <div class="wrapper">
-    <h1>Juego de Roblox</h1>
+    <h1>RUN FROM IT</h1>
     <div class="status">🚧 En desarrollo</div>
+    <div class="dynamic-text" id="dynamicText"></div>
     <div class="date">Lanzamiento: 14 de julio de 2026</div>
 
     <div class="countdown">
@@ -147,17 +147,17 @@
       </div>
     </div>
 
-    <footer>© 2026 · Juego de Roblox</footer>
+    <footer>© 2026 · RUN FROM IT</footer>
   </div>
 
   <script>
+    /* ===== CONTADOR ===== */
     const releaseDate = new Date("July 14, 2026 00:00:00").getTime();
 
-    setInterval(() => {
-      const now = new Date().getTime();
+    function updateCountdown() {
+      const now = Date.now();
       const distance = releaseDate - now;
-
-      if (distance < 0) return;
+      if (distance <= 0) return;
 
       document.getElementById("days").textContent =
         Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -167,8 +167,28 @@
         Math.floor((distance / (1000 * 60)) % 60);
       document.getElementById("seconds").textContent =
         Math.floor((distance / 1000) % 60);
-    }, 1000);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    /* ===== TEXTO QUE CAMBIA CADA DÍA ===== */
+    const dailyMessages = [
+      "Creando el mundo...",
+      "Programando sistemas...",
+      "Diseñando mapas...",
+      "Optimizando gameplay...",
+      "Probando mecánicas...",
+      "Preparando el lanzamiento..."
+    ];
+
+    const textElement = document.getElementById("dynamicText");
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const dayNumber = Math.floor((today - startOfYear) / (1000 * 60 * 60 * 24));
+
+    textElement.textContent =
+      dailyMessages[dayNumber % dailyMessages.length];
   </script>
 </body>
 </html>
-
