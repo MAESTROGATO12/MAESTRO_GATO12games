@@ -2,258 +2,313 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<title>Repetición</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RUN AWAY</title>
 
 <style>
-/* =========================
-   RESET
-========================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#020617;
+  color:#e5e7eb;
+  font-family:system-ui, monospace;
 }
-
-html, body {
-  height: 100%;
-  background: #000;
-  color: #e5e7eb;
-  font-family: monospace;
-  overflow: hidden;
+@media(max-width:900px){
+  body::before{
+    content:"Repetición solo está disponible en PC";
+    position:fixed;inset:0;
+    background:#020617;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+  }
 }
-
-/* =========================
-   BACKGROUND EFFECTS
-========================= */
-.noise {
-  position: fixed;
-  inset: 0;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255,255,255,0.03),
-      rgba(255,255,255,0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-  pointer-events: none;
-  z-index: 1;
+#game{
+  max-width:900px;
+  margin:auto;
+  padding:40px;
 }
-
-.vignette {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
-  pointer-events: none;
-  z-index: 2;
+h1,h2{
+  font-weight:900;
+  margin-bottom:20px;
 }
-
-/* =========================
-   MAIN WRAPPER
-========================= */
-.app {
-  position: relative;
-  z-index: 5;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding: 40px;
+p{
+  margin-bottom:14px;
+  line-height:1.6;
 }
-
-/* =========================
-   TITLE
-========================= */
-.title {
-  font-size: clamp(3rem, 8vw, 6rem);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  position: relative;
+.choices{
+  margin-top:30px;
+  display:grid;
+  gap:12px;
 }
-
-.title::before,
-.title::after {
-  content: "RUN AWAY";
-  position: absolute;
-  inset: 0;
-  opacity: 0;
+button{
+  background:#020617;
+  border:1px solid #1f2937;
+  color:#e5e7eb;
+  padding:14px;
+  border-radius:10px;
+  cursor:pointer;
+  text-align:left;
 }
-
-.title::before {
-  color: red;
+button:hover{
+  border-color:#22d3ee;
 }
-
-.title::after {
-  color: #fff;
+.hidden{display:none}
+.end{
+  font-size:1.4rem;
+  color:#22d3ee;
 }
-
-.glitch::before {
-  opacity: 1;
-  animation: glitchA 0.25s infinite;
-}
-
-.glitch::after {
-  opacity: 1;
-  animation: glitchB 0.25s infinite;
-}
-
-@keyframes glitchA {
-  0% { transform: translate(0); clip-path: inset(0 0 60% 0); }
-  50% { transform: translate(-4px, -2px); clip-path: inset(0 0 30% 0); }
-  100% { transform: translate(0); }
-}
-
-@keyframes glitchB {
-  0% { transform: translate(0); clip-path: inset(60% 0 0 0); }
-  50% { transform: translate(4px, 2px); clip-path: inset(30% 0 0 0); }
-  100% { transform: translate(0); }
-}
-
-/* =========================
-   SUBTEXT
-========================= */
-.sub {
-  margin-top: 30px;
-  font-size: 0.85rem;
-  letter-spacing: 3px;
-  color: #9ca3af;
-}
-
-/* =========================
-   TERMINAL
-========================= */
-.terminal {
-  position: absolute;
-  bottom: 40px;
-  width: 100%;
-  max-width: 700px;
-  font-size: 0.75rem;
-  color: #a5f3fc;
-  text-align: left;
-  line-height: 1.6;
-}
-
-/* =========================
-   HIDDEN
-========================= */
-.hidden {
-  display: none;
+.stat{
+  font-size:.75rem;
+  color:#6b7280;
+  margin-top:40px;
+  border-top:1px solid #1f2937;
+  padding-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="noise"></div>
-<div class="vignette"></div>
-
-<div class="app">
-  <div>
-    <div class="title" id="title">RUN AWAY</div>
-    <div class="sub">you were not supposed to find this</div>
-  </div>
-
-  <div class="terminal" id="terminal"></div>
-</div>
+<div id="game"></div>
 
 <script>
 /* =========================
-   GLITCH RANDOM
+   ESTADO GLOBAL DEL JUEGO
 ========================= */
-const title = document.getElementById("title");
-
-function glitchOnce() {
-  title.classList.add("glitch");
-  setTimeout(() => title.classList.remove("glitch"), 400);
-}
-
-function randomGlitch() {
-  glitchOnce();
-  setTimeout(randomGlitch, Math.random() * 7000 + 4000);
-}
-randomGlitch();
+let state = {
+  act: 1,
+  conciencia: 0,
+  duda: 0,
+  obediencia: 0,
+  curiosidad: 0,
+  rupturas: 0,
+  loops: 0,
+  visto: {}
+};
 
 /* =========================
-   TERMINAL TEXT
+   MOTOR
 ========================= */
-const terminal = document.getElementById("terminal");
-const lines = [
-  "> connection established",
-  "> signal unstable",
-  "> they are closer than you think",
-  "> do not trust the page",
-  "> time is not what you believe",
-  "> RUN"
-];
+const game = document.getElementById("game");
 
-let i = 0;
-function typeLine() {
-  if (i >= lines.length) return;
-  terminal.innerHTML += lines[i] + "<br>";
-  i++;
-  setTimeout(typeLine, 1100);
+function render(text, choices=[]){
+  game.innerHTML = "";
+  text.forEach(t=>{
+    const p=document.createElement("p");
+    p.textContent=t;
+    game.appendChild(p);
+  });
+
+  const c=document.createElement("div");
+  c.className="choices";
+
+  choices.forEach(ch=>{
+    const b=document.createElement("button");
+    b.textContent=ch.text;
+    b.onclick=()=>ch.action();
+    c.appendChild(b);
+  });
+
+  game.appendChild(c);
+  renderStats();
 }
-setTimeout(typeLine, 2000);
+
+function renderStats(){
+  const s=document.createElement("div");
+  s.className="stat";
+  s.innerHTML=`
+  conciencia:${state.conciencia} |
+  duda:${state.duda} |
+  obediencia:${state.obediencia} |
+  curiosidad:${state.curiosidad} |
+  rupturas:${state.rupturas} |
+  repeticiones:${state.loops}
+  `;
+  game.appendChild(s);
+}
 
 /* =========================
-   TIME-BASED ARG EVENT
+   ACTO 1
 ========================= */
-(function () {
-  const startHour = 3;
-  const endHour = 4;
-  const secretLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1";
+function start(){
+  render([
+    "Te despiertas.",
+    "La habitación es la misma.",
+    "Siempre es la misma."
+  ],[
+    {text:"Mirar alrededor",action:mirar},
+    {text:"Cerrar los ojos",action:cerrarOjos},
+    {text:"Levantarte",action:levantarte}
+  ]);
+}
 
-  const now = new Date();
-  const spainTime = new Date(
-    now.toLocaleString("en-US", { timeZone: "Europe/Madrid" })
-  );
+function mirar(){
+  state.curiosidad++;
+  render([
+    "No hay nada nuevo.",
+    "Eso te inquieta más de lo que debería."
+  ],[
+    {text:"Aceptar que es normal",action:()=>{state.obediencia++; start()}},
+    {text:"Pensar que ya viste esto antes",action:recuerdo}
+  ]);
+}
 
-  const hour = spainTime.getHours();
+function cerrarOjos(){
+  state.obediencia++;
+  render([
+    "Cierras los ojos.",
+    "Nada cambia."
+  ],[
+    {text:"Abrirlos",action:start}
+  ]);
+}
 
-  if (hour >= startHour && hour < endHour) {
-    document.body.innerHTML = "";
-    document.body.style.background = "black";
+function levantarte(){
+  state.conciencia++;
+  render([
+    "Te levantas.",
+    "La puerta está ahí.",
+    "Siempre lo ha estado."
+  ],[
+    {text:"Abrir la puerta",action:puerta},
+    {text:"No hacerlo",action:()=>{state.duda++; start()}}
+  ]);
+}
 
-    const msg = document.createElement("div");
-    msg.textContent = "RUN.";
-    msg.style.color = "red";
-    msg.style.fontSize = "5rem";
-    msg.style.letterSpacing = "0.4em";
-    msg.style.position = "fixed";
-    msg.style.top = "50%";
-    msg.style.left = "50%";
-    msg.style.transform = "translate(-50%, -50%)";
-    msg.style.animation = "shake 0.1s infinite";
+function recuerdo(){
+  state.duda++;
+  render([
+    "Una sensación extraña.",
+    "Como si esto ya hubiera ocurrido."
+  ],[
+    {text:"Ignorar el pensamiento",action:start},
+    {text:"Explorar esa idea",action:acto2}
+  ]);
+}
 
-    document.body.appendChild(msg);
+/* =========================
+   ACTO 2
+========================= */
+function acto2(){
+  state.act=2;
+  render([
+    "ACTO II",
+    "Empiezas a notar las repeticiones.",
+    "El juego no las oculta."
+  ],[
+    {text:"Seguir jugando",action:ciclo},
+    {text:"Buscar una salida",action:buscarSalida}
+  ]);
+}
 
-    setTimeout(() => {
-      window.location.href = secretLink;
-    }, 5000);
+function ciclo(){
+  state.loops++;
+  state.obediencia++;
+  render([
+    "Repites acciones.",
+    "El sistema parece satisfecho."
+  ],[
+    {text:"Continuar",action:acto2},
+    {text:"Romper el ciclo",action:romper}
+  ]);
+}
+
+function buscarSalida(){
+  state.curiosidad++;
+  render([
+    "No hay salida visible.",
+    "Pero algo observa."
+  ],[
+    {text:"Hablar con ello",action:hablar},
+    {text:"Callar",action:acto2}
+  ]);
+}
+
+function hablar(){
+  state.conciencia++;
+  render([
+    "— No deberías hacer eso.",
+    "La voz suena como la tuya."
+  ],[
+    {text:"Preguntar quién es",action:acto3},
+    {text:"Obedecer",action:acto2}
+  ]);
+}
+
+function romper(){
+  state.rupturas++;
+  state.duda++;
+  render([
+    "Algo se rompe.",
+    "No sabes qué, pero lo sientes."
+  ],[
+    {text:"Seguir",action:acto3}
+  ]);
+}
+
+/* =========================
+   ACTO 3
+========================= */
+function acto3(){
+  state.act=3;
+  render([
+    "ACTO III",
+    "El juego ya no finge.",
+    "Todo depende de lo que hiciste antes."
+  ],[
+    {text:"Aceptar el sistema",action:finalObediencia},
+    {text:"Negarlo",action:finalConciencia},
+    {text:"Quedarte aquí",action:finalEstasis},
+    {text:"Forzar el error",action:finalRuptura},
+    {text:"Apagar el juego",action:finalMeta}
+  ]);
+}
+
+/* =========================
+   FINALES (5)
+========================= */
+function end(text){
+  game.innerHTML="";
+  const h=document.createElement("h2");
+  h.className="end";
+  h.textContent=text;
+  game.appendChild(h);
+}
+
+function finalObediencia(){
+  end("FINAL 1 — Obediencia\nEl sistema te conserva.");
+}
+
+function finalConciencia(){
+  if(state.conciencia>=3){
+    end("FINAL 2 — Conciencia\nSales, pero recuerdas todo.");
+  }else{
+    end("No estabas listo.");
   }
-})();
-
-/* =========================
-   SHAKE
-========================= */
-const style = document.createElement("style");
-style.innerHTML = `
-@keyframes shake {
-  0% { transform: translate(-50%, -50%) translate(0,0); }
-  25% { transform: translate(-50%, -50%) translate(4px,-4px); }
-  50% { transform: translate(-50%, -50%) translate(-4px,4px); }
-  75% { transform: translate(-50%, -50%) translate(4px,4px); }
-  100% { transform: translate(-50%, -50%) translate(0,0); }
 }
-`;
-document.head.appendChild(style);
+
+function finalEstasis(){
+  end("FINAL 3 — Estasis\nEl tiempo no avanza.");
+}
+
+function finalRuptura(){
+  if(state.rupturas>=2){
+    end("FINAL 4 — Ruptura\nNada vuelve a ser igual.");
+  }else{
+    end("Fallaste al romperlo.");
+  }
+}
+
+function finalMeta(){
+  end("FINAL 5 — Meta\n¿De verdad cerraste el juego?");
+}
+
+/* ========================= */
+start();
 </script>
 
 </body>
 </html>
-
-
-
-
-                                                                                                                  
+                                                                                                                 
